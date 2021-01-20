@@ -21,7 +21,7 @@ try {
 
 //middleware
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://react-jwt-blog.herokuapp.com/',
     credentials: true
 }));
 app.use(bodyParser.json());
