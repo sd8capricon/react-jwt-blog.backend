@@ -8,6 +8,7 @@ function AllBlogs(){
 
     //state
     const[blogs, setBlogs]=useState([]);
+    const[isError, setIsError]=useState(true);
 
     //get blogs
     useEffect(()=>{
@@ -17,8 +18,10 @@ function AllBlogs(){
         }).then((res)=>{
             console.log(res.data);
             setBlogs(res.data);
+            setIsError(false);
         }).catch((err)=>{
             console.log(err);
+            setIsError(true);
         });
     },[]);
     
@@ -37,6 +40,7 @@ function AllBlogs(){
         <div style={{background:' rgb(224, 224, 224)'}}>
             <MyNav/>
             {blogs.map(createPost)}
+            {isError?<p style={{color:"red"}}>Error Getting Blogs From Server</p>:<><br/><p/></>}
         </div>
     );
 }
