@@ -27,8 +27,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
 
 //routes
-app.use(AuthRoutes);
-app.use(BlogRoutes);
+app.use('/backend/authenticate',AuthRoutes);
+app.use('/backend', BlogRoutes);
 
 app.listen(PORT, ()=>{
     console.log(`Server Listening on Port ${PORT}`);

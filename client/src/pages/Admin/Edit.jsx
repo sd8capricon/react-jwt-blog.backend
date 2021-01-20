@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import jwt from 'jsonwebtoken';
 import { Link } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import MyNav from '../components/Nav';
@@ -20,16 +19,26 @@ function Edit(){
     //To Verify Token and to get blogs
     useEffect(()=>{
         const token = localStorage.getItem('admin');
-        jwt.verify(token, process.env.REACT_APP_JWT_SECRET, (err, decoded)=>{
-            if(!err){
+        axios({
+            method:'POST',
+            url:'/backend/authenticate/verify',
+            data:{
+                token: token
+            }
+        }).then((res)=>{
+            console.log(res);
+            if(res.data.authStatus === true){
                 setIsLoggedIn(true);
             }else{
                 setIsLoggedIn(false);
             }
+        }).catch((err)=>{
+            console.log(err);
+            setIsLoggedIn(false);
         });
         axios({
             method: 'GET',
-            url: 'http://localhost:5000/blogs'
+            url: '/backend/blogs'
         }).then((res)=>{
             setPosts(res.data);
         });
@@ -53,7 +62,7 @@ function Edit(){
         if(id !== 'select'){
             axios({
                 method: 'POST',
-                url: 'http://localhost:5000/update/'+id,
+                url: '/backend/update/'+id,
                 data:{
                     title: title,
                     content: body
@@ -81,13 +90,14 @@ function Edit(){
             console.log('get ran');
             axios({
                 method: 'GET',
-                url: 'http://localhost:5000/blogsid/'+id
+                url: '/backend/blogsid/'+id
             }).then((res)=>{
                 setTitle(res.data.title);
-                setBody(res.data.body)
+                setBody(res.data.body);
             });
         }else{
-            console.log(id);
+            setTitle('');
+                setBody('');
         }
     },[id]);
 

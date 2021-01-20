@@ -3,7 +3,7 @@ const express =require('express');
 require('dotenv').config();
 const router = express.Router();
 
-router.post('/authenticate', (req, res)=>{
+router.post('/login', (req, res)=>{
     console.log('Admin Login Route');
     const username = req.body.username;
     const password = req.body.password;
@@ -30,5 +30,20 @@ router.post('/authenticate', (req, res)=>{
         });
     }
 });
+
+router.post('/verify', (req, res)=>{
+    const token=req.body.token;
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded)=>{
+        if(!err){
+            res.status(200).json({
+                authStatus: true
+            });
+        }else{
+            res.status(200).json({
+                authStatus: false
+            })
+        }
+    });
+})
 
 module.exports = router;

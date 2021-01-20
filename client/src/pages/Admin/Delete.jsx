@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import jwt from 'jsonwebtoken';
 import { Button, FormLabel } from 'react-bootstrap';
 import MyNav from '../components/Nav';
 import NotLoggedIn from '../components/NotLoggedIn';
@@ -17,17 +16,26 @@ function Delete(){
     //To Verify Token and to get blogs
     useEffect(()=>{
         const token = localStorage.getItem('admin');
-        jwt.verify(token, process.env.REACT_APP_JWT_SECRET, (err, decoded)=>{
-            if(!err){
-                console.log('ran');
+        axios({
+            method:'POST',
+            url:'/backend/authenticate/verify',
+            data:{
+                token: token
+            }
+        }).then((res)=>{
+            console.log(res);
+            if(res.data.authStatus === true){
                 setIsLoggedIn(true);
             }else{
                 setIsLoggedIn(false);
             }
+        }).catch((err)=>{
+            console.log(err);
+            setIsLoggedIn(false);
         });
         axios({
             method: 'GET',
-            url: 'http://localhost:5000/blogs'
+            url: '/backend/blogs'
         }).then((res)=>{
             setPosts(res.data);
         });
@@ -36,16 +44,16 @@ function Delete(){
     //For getting title and body after selection
     useEffect(()=>{
         if(id !== 'select'){
-            console.log('get ran');
             axios({
                 method: 'GET',
-                url: 'http://localhost:5000/blogsid/'+id
+                url: '/backend/blogsid/'+id
             }).then((res)=>{
                 setTitle(res.data.title);
-                setBody(res.data.body)
+                setBody(res.data.body);
             });
         }else{
-            console.log(id);
+            setTitle('');
+            setBody('');
         }
     },[id]);
 
@@ -55,11 +63,10 @@ function Delete(){
     }
 
     function handleDelete(){
-        console.log('del function ran');
         if(id !== 'select'){
             axios({
                 method: 'POST',
-                url: 'http://localhost:5000/delete/'+id
+                url: '/backend/delete/'+id
             }).then((res)=>{
                 if(res.status === 200){
                     console.log('Blog Deleted');

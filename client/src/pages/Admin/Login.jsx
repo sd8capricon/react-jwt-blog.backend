@@ -24,7 +24,7 @@ function Login(){
         e.preventDefault();
         axios({
             method:'POST',
-            url:'http://localhost:5000/authenticate',
+            url:'/backend/authenticate/login',
             data:{
                 username: username,
                 password: password

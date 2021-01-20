@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import jwt from 'jsonwebtoken';
 import { Link } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap'
 import NotLoggedIn from '../components/NotLoggedIn';
@@ -18,14 +17,22 @@ function Compose(){
     //Verify Token
     useEffect(()=>{
         const token = localStorage.getItem('admin');
-        jwt.verify(token, process.env.REACT_APP_JWT_SECRET, (err, decoded)=>{
-            if(!err){
+        axios({
+            method:'POST',
+            url:'/backend/authenticate/verify',
+            data:{
+                token: token
+            }
+        }).then((res)=>{
+            if(res.data.authStatus === true){
                 setIsLoggedIn(true);
             }else{
-                console.log(err);
                 setIsLoggedIn(false);
             }
-        })
+        }).catch((err)=>{
+            console.log(err);
+            setIsLoggedIn(false);
+        });
     },[]);
 
     //Handle Form
@@ -39,7 +46,7 @@ function Compose(){
         e.preventDefault();
         axios({
             method: 'POST',
-            url: 'http://localhost:5000/compose',
+            url: '/backend/compose',
             data:{
                 title: title,
                 content: body
@@ -51,9 +58,9 @@ function Compose(){
             }else if(res.data.isError === true){
                 setIsError(true);
                 if(res.data.error.message === 'Post validation failed: body: Path `body` is required.'){
-                    setError('Body of the blog cannot be empty');
+                    setError('Body Of The Blog Cannot Be Empty');
                 }else if(res.data.error.message === 'Post validation failed: title: Path `title` is required.'){
-                    setError('Title of the blog cannot be empty');
+                    setError('Title Of The Blog Cannot Be Empty');
                 };;
             }
         }).catch((err)=>{

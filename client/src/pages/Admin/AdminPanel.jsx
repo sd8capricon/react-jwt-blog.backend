@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import jwt from 'jsonwebtoken';
+import axios from 'axios';
 import { Container,Row, Col, Button } from 'react-bootstrap';
 import MyNav from '../components/Nav';
 import NotLoggedIn from '../components/NotLoggedIn';
@@ -11,13 +11,22 @@ import NotLoggedIn from '../components/NotLoggedIn';
 
     useEffect(()=>{
         const token = localStorage.getItem('admin');
-        jwt.verify(token, process.env.REACT_APP_JWT_SECRET, (err, decoded)=>{
-            if(!err){
+        axios({
+            method:'POST',
+            url:'/backend/authenticate/verify',
+            data:{
+                token: token
+            }
+        }).then((res)=>{
+            if(res.data.authStatus === true){
                 setIsLoggedIn(true);
             }else{
                 setIsLoggedIn(false);
             }
-        })
+        }).catch((err)=>{
+            console.log(err);
+            setIsLoggedIn(false);
+        });
     },[]);
 
     function handleLogout(){

@@ -13,7 +13,7 @@ function AllBlogs(){
     useEffect(()=>{
         axios({
             method: 'GET',
-            url:'http://localhost:5000/blogs',
+            url:'/backend/blogs',
         }).then((res)=>{
             console.log(res.data);
             setBlogs(res.data);
