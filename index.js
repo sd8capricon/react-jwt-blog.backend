@@ -16,7 +16,7 @@ mongoose.connect(URI, { useNewUrlParser:true, useUnifiedTopology: true, useCreat
     
 //middleware
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://reactjwtblog.web.app'],
+    origin: ['http://localhost:3000', 'https://reactjwtblog.web.app', 'https://sd8capricon.github.io/react-jwt-blog.frontend'],
     credentials: true
 }));
 app.use(express.json());
